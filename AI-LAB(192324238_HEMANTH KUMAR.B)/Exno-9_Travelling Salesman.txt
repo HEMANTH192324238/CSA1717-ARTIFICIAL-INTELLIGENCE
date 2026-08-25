@@ -1,0 +1,32 @@
+import itertools
+
+# Define the graph as a distance matrix
+# For 4 cities (0 to 3), distance_matrix[i][j] is the distance from city i to j
+distance_matrix = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+
+def tsp_brute_force(distance_matrix):
+    n = len(distance_matrix)
+    cities = list(range(n))
+    min_cost = float('inf')
+    best_path = []
+
+    for perm in itertools.permutations(cities[1:]):
+        path = [0] + list(perm) + [0]  # Start and end at city 0
+        cost = sum(distance_matrix[path[i]][path[i+1]] for i in range(len(path)-1))
+
+        if cost < min_cost:
+            min_cost = cost
+            best_path = path
+
+    return best_path, min_cost
+
+# Run the TSP solver
+path, cost = tsp_brute_force(distance_matrix)
+print("Best path:", ' -> '.join(map(str, path)))
+print("Minimum cost:", cost)
+print("192324238-Hemanth Kumar")

@@ -1,0 +1,85 @@
+import math
+import random
+print("192324214-p.rahulreddy")
+
+# Sigmoid activation and its derivative
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+def sigmoid_derivative(output):
+    return output * (1 - output)
+
+# Initialize weights and biases randomly
+def initialize_weights():
+    return {
+        'input_hidden': [[random.uniform(-1, 1) for _ in range(2)] for _ in range(2)],
+        'hidden_output': [random.uniform(-1, 1) for _ in range(2)],
+        'bias_hidden': [random.uniform(-1, 1) for _ in range(2)],
+        'bias_output': random.uniform(-1, 1)
+    }
+
+# Forward pass
+def forward_pass(inputs, weights):
+    hidden_activations = []
+    for i in range(2):  # hidden layer has 2 neurons
+        activation = sum(inputs[j] * weights['input_hidden'][j][i] for j in range(2)) + weights['bias_hidden'][i]
+        hidden_activations.append(sigmoid(activation))
+
+    output = sum(hidden_activations[i] * weights['hidden_output'][i] for i in range(2)) + weights['bias_output']
+    output = sigmoid(output)
+
+    return hidden_activations, output
+
+# Training the neural network
+def train(data, labels, epochs=10000, learning_rate=0.1):
+    weights = initialize_weights()
+
+    for epoch in range(epochs):
+        total_error = 0
+        for idx, inputs in enumerate(data):
+            target = labels[idx]
+            # Forward
+            hidden, output = forward_pass(inputs, weights)
+
+            # Error
+            error = target - output
+            total_error += error ** 2
+
+            # Output layer gradients
+            delta_output = error * sigmoid_derivative(output)
+
+            # Hidden layer gradients
+            deltas_hidden = [delta_output * weights['hidden_output'][i] * sigmoid_derivative(hidden[i]) for i in range(2)]
+
+            # Update output weights and bias
+            for i in range(2):
+                weights['hidden_output'][i] += learning_rate * delta_output * hidden[i]
+            weights['bias_output'] += learning_rate * delta_output
+
+            # Update input->hidden weights and biases
+            for i in range(2):
+                for j in range(2):
+                    weights['input_hidden'][j][i] += learning_rate * deltas_hidden[i] * inputs[j]
+                weights['bias_hidden'][i] += learning_rate * deltas_hidden[i]
+
+        if epoch % 1000 == 0:
+            print(f"Epoch {epoch}, Loss: {total_error:.4f}")
+
+    return weights
+
+# Predict
+def predict(inputs, weights):
+    _, output = forward_pass(inputs, weights)
+    return round(output)
+
+# XOR dataset
+X = [[0, 0], [0, 1], [1, 0], [1, 1]]
+y = [0, 1, 1, 0]
+
+# Train
+trained_weights = train(X, y)
+
+# Test
+print("\nTest Results:")
+for inputs in X:
+    print(f"{inputs} => {predict(inputs, trained_weights)}")

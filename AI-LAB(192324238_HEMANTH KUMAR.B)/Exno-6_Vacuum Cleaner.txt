@@ -1,0 +1,41 @@
+def vacuum_cleaner(problem_state):
+    print("192324238-Hemanth Kumar")
+    """
+    problem_state: a tuple (location, A_status, B_status)
+    location: 'A' or 'B'
+    A_status, B_status: 'dirty' or 'clean'
+    """
+    location, A, B = problem_state
+    actions = []
+
+    print(f"Initial State: Location: {location}, Room A: {A}, Room B: {B}")
+
+    if location == 'A':
+        if A == 'dirty':
+            actions.append("Suck")
+            A = 'clean'
+        actions.append("Move Right to B")
+        location = 'B'
+        if B == 'dirty':
+            actions.append("Suck")
+            B = 'clean'
+
+    elif location == 'B':
+        if B == 'dirty':
+            actions.append("Suck")
+            B = 'clean'
+        actions.append("Move Left to A")
+        location = 'A'
+        if A == 'dirty':
+            actions.append("Suck")
+            A = 'clean'
+
+    print("Actions:")
+    for step, action in enumerate(actions, 1):
+        print(f"  Step {step}: {action}")
+
+    print(f"Final State: Location: {location}, Room A: {A}, Room B: {B}")
+
+# Example usage:
+initial_state = ('A', 'dirty', 'dirty')
+vacuum_cleaner(initial_state)

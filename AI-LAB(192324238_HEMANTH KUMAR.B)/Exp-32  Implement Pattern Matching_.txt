@@ -1,0 +1,7 @@
+% Base case: The length of an empty list is 0
+list_length([], 0).
+
+% Recursive case: Length is 1 + length of the tail
+list_length([_|T], N) :-
+    list_length(T, N1),
+    N is N1 + 1.

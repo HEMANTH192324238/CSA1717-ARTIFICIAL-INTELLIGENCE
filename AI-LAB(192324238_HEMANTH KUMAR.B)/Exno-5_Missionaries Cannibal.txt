@@ -1,0 +1,79 @@
+from collections import deque
+print("192324238-Hemanth Kumar")
+# Define initial and goal states
+initial_state = (3, 3, 1)  # (missionaries_left, cannibals_left, boat_side) 1=left, 0=right
+goal_state = (0, 0, 0)
+
+# All possible valid moves for the boat
+moves = [
+    (1, 0),  # One missionary
+    (2, 0),  # Two missionaries
+    (0, 1),  # One cannibal
+    (0, 2),  # Two cannibals
+    (1, 1),  # One missionary and one cannibal
+]
+
+def is_valid(m_left, c_left, m_right, c_right):
+    """Check if state is valid."""
+    if m_left < 0 or c_left < 0 or m_right < 0 or c_right < 0:
+        return False
+    if (m_left > 0 and m_left < c_left) or (m_right > 0 and m_right < c_right):
+        return False
+    return True
+
+def bfs():
+    queue = deque()
+    visited = set()
+    parent = {}
+
+    queue.append(initial_state)
+    visited.add(initial_state)
+    parent[initial_state] = None
+
+    while queue:
+        state = queue.popleft()
+        m_left, c_left, boat = state
+        m_right = 3 - m_left
+        c_right = 3 - c_left
+
+        if state == goal_state:
+            return reconstruct_path(parent, state)
+
+        for m_move, c_move in moves:
+            if boat == 1:  # Boat on left side
+                new_state = (m_left - m_move, c_left - c_move, 0)
+            else:  # Boat on right side
+                new_state = (m_left + m_move, c_left + c_move, 1)
+
+            m_l, c_l, _ = new_state
+            m_r = 3 - m_l
+            c_r = 3 - c_l
+
+            if is_valid(m_l, c_l, m_r, c_r) and new_state not in visited:
+                visited.add(new_state)
+                parent[new_state] = state
+                queue.append(new_state)
+
+    return None
+
+def reconstruct_path(parent_map, state):
+    path = []
+    while state is not None:
+        path.append(state)
+        state = parent_map[state]
+    return path[::-1]
+
+def print_solution(path):
+    for step, state in enumerate(path):
+        m_left, c_left, boat = state
+        m_right = 3 - m_left
+        c_right = 3 - c_left
+        side = "left" if boat == 1 else "right"
+        print(f"Step {step}: Left[{m_left}M, {c_left}C] --- Boat on {side} --- Right[{m_right}M, {c_right}C]")
+
+# Run the program
+solution = bfs()
+if solution:
+    print_solution(solution)
+else:
+    print("No solution found.")

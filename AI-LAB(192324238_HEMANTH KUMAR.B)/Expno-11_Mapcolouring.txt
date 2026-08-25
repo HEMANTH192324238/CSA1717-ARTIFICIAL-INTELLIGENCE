@@ -1,0 +1,51 @@
+def is_valid(region, color, assignment, neighbors):
+    print("192324214-p.rahulreddy")
+    # Check if any neighbor has the same color
+    for neighbor in neighbors[region]:
+        if assignment.get(neighbor) == color:
+            return False
+    return True
+
+def backtrack(assignment, regions, colors, neighbors):
+    # If all regions are assigned, return the solution
+    if len(assignment) == len(regions):
+        return assignment
+
+    # Select the next unassigned region
+    unassigned = [r for r in regions if r not in assignment]
+    region = unassigned[0]
+
+    for color in colors:
+        if is_valid(region, color, assignment, neighbors):
+            assignment[region] = color
+            result = backtrack(assignment, regions, colors, neighbors)
+            if result:
+                return result
+            del assignment[region]  # Backtrack
+
+    return None
+
+# Example usage
+if __name__ == "__main__":
+    # Define the regions and their neighbors (graph)
+    neighbors = {
+        'WA': ['NT', 'SA'],
+        'NT': ['WA', 'SA', 'Q'],
+        'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+        'Q':  ['NT', 'SA', 'NSW'],
+        'NSW':['SA', 'Q', 'V'],
+        'V':  ['SA', 'NSW'],
+        'T':  []
+    }
+
+    regions = list(neighbors.keys())
+    colors = ['Red', 'Green', 'Blue']
+
+    solution = backtrack({}, regions, colors, neighbors)
+
+    if solution:
+        print("Map coloring solution:")
+        for region, color in solution.items():
+            print(f"{region}: {color}")
+    else:
+        print("No solution found.")
