@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# Build/output files
+dist/
+build/
+*.log
+
+# Local secrets/config
+.env
+.env.*
+!.env.example
+
+# Generated model files
+*.pkl
+*.joblib
+
+# Generated images/results (keep folder structure)
+outputs/*
+!outputs/.gitkeep
